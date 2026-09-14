@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices E2 – Rentabilité d'une opération commerciale (sujet Asthéya revisité)</title>
+<style>
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f1117;
+  --surface:   #181b24;
+  --card:      #1e2130;
+  --border:    #2a2e3f;
+  --border-hi: #3a3f5a;
+  --text:      #d8dce8;
+  --text-dim:  #7a7f96;
+  --accent:    #f5c431;
+  --green:     #3ecf6a;
+  --red:       #f05252;
+  --blue:      #4d9de0;
+  --purple:    #9b72cf;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius:    10px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.site-header {
+  background: linear-gradient(135deg, #13161f 0%, #1a1e2e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 24px 36px;
+  text-align: center;
+}
+.site-header .kicker {
+  display: inline-block;
+  background: var(--accent);
+  color: #0f1117;
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+}
+.site-header h1 {
+  font-family: var(--font-head);
+  font-size: clamp(22px, 5vw, 38px);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.15;
+}
+.site-header .sub {
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 300;
+  max-width: 560px;
+  margin: 0 auto 24px;
+}
+
+/* ── NAV ANCRES ──────────────────────────────────────────── */
+.nav-anchors {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.nav-anchors a {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 16px;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.nav-anchors a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── CONTENEUR PRINCIPAL ─────────────────────────────────── */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── TITRE DE BLOC ───────────────────────────────────────── */
+.bloc-titre {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 52px 0 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.bloc-titre:first-child { margin-top: 0; }
+.bloc-titre .icone {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+.bloc-titre h2 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+}
+
+/* ── MÉMO FORMULE ────────────────────────────────────────── */
+.memo {
+  background: #0d1a0d;
+  border: 1px solid #1e3b1e;
+  border-left: 4px solid var(--green);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13.5px;
+  line-height: 1.75;
+}
+.memo .memo-titre {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.memo code {
+  display: block;
+  background: #0a130a;
+  border-radius: 5px;
+  padding: 8px 14px;
+  color: #7ddf8a;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  margin: 4px 0;
+}
+.memo .note {
+  color: var(--text-dim);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.memo .analogie {
+  background: #14172a;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 10px 14px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+.memo .analogie strong { color: var(--blue); }
+.memo .recette {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--text);
+}
+.memo .recette strong { color: var(--accent); }
+.memo .recette ol { margin: 4px 0 0 18px; }
+
+/* ── CARTE EXERCICE ──────────────────────────────────────── */
+.exo-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.exo-card:hover { border-color: var(--border-hi); }
+
+.exo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.exo-header::-webkit-details-marker { display: none; }
+
+.exo-num {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  min-width: 40px;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 9px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.badge-1 { background: #0d2a0d; color: var(--green); border: 1px solid #1e4a1e; }
+.badge-2 { background: #1a1a00; color: var(--accent); border: 1px solid #3a3a00; }
+.badge-3 { background: #2a0d0d; color: var(--red); border: 1px solid #4a1a1a; }
+.badge-exam { background: #1a0d2a; color: var(--purple); border: 1px solid #3a1a4a; }
+
+.exo-titre-txt {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+}
+.chevron {
+  color: var(--text-dim);
+  font-size: 13px;
+  flex-shrink: 0;
+  transition: transform .2s;
+}
+details[open] .chevron { transform: rotate(180deg); }
+
+/* ── CORPS DE L'EXERCICE ─────────────────────────────────── */
+.exo-body {
+  padding: 0 18px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.contexte {
+  background: #14172a;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.contexte strong { color: #fff; }
+
+.tableau-donnees {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 12px 0;
+}
+.tableau-donnees th {
+  background: #1a1d2e;
+  color: var(--text-dim);
+  font-family: var(--font-head);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.tableau-donnees td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.tableau-donnees tr:last-child td { border-bottom: none; }
+.tableau-donnees td.num { font-weight: 600; color: #fff; }
+.tableau-donnees tr.total-row td {
+  background: #1a1d2e;
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.questions { margin: 18px 0 0; }
+.question {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.question .q-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: #0f1117;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 11px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+.question p { font-size: 14px; margin: 0; }
+
+/* ── ORDRE DE GRANDEUR ───────────────────────────────────── */
+.ordre-grandeur {
+  background: #1a1700;
+  border: 1px solid #3a3200;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  color: #c8b840;
+  margin: 12px 0 0;
+}
+.ordre-grandeur::before { content: "💡 "; }
+
+/* ── BOUTON CORRECTION ───────────────────────────────────── */
+.btn-corrige {
+  background: none;
+  border: 1px solid var(--border-hi);
+  border-radius: 6px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  margin-top: 18px;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-corrige:hover { border-color: var(--green); color: var(--green); }
+
+/* ── CORRECTION ──────────────────────────────────────────── */
+.correction {
+  display: none;
+  background: #0d1a0d;
+  border: 1px solid #1e3b1e;
+  border-radius: 6px;
+  padding: 16px 18px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  line-height: 1.8;
+}
+.correction.visible { display: block; }
+.correction .corr-etape {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1a2e1a;
+}
+.correction .corr-etape:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.correction .c-num {
+  display: inline-block;
+  background: var(--green);
+  color: #0d1a0d;
+  font-family: var(--font-head);
+  font-weight: 800;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 18px;
+  margin-right: 6px;
+}
+.correction code {
+  display: block;
+  background: #0a130a;
+  border-radius: 4px;
+  padding: 6px 12px;
+  color: #7ddf8a;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  margin: 5px 0;
+}
+.correction .res {
+  font-family: var(--font-head);
+  font-weight: 700;
+  color: #fff;
+}
+.correction .conclu {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #a0c8a0;
+  font-style: italic;
+}
+.correction .tableau-corr {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin: 8px 0;
+}
+.correction .tableau-corr th {
+  background: #0a1a0a;
+  color: var(--text-dim);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  text-align: left;
+}
+.correction .tableau-corr td {
+  padding: 6px 10px;
+  border-bottom: 1px solid #1a2e1a;
+  color: #9ac09a;
+}
+.correction .tableau-corr td.val {
+  font-weight: 700;
+  color: var(--green);
+}
+.correction .tableau-corr tr.t-total td {
+  background: #0a1a0a;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ── SÉPARATEUR ──────────────────────────────────────────── */
+hr.section-sep {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 54px 0 0;
+}
+
+/* ── FOOTER ──────────────────────────────────────────────── */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .exo-titre-txt { font-size: 13px; }
+  .contexte { font-size: 13px; }
+  .tableau-donnees { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="kicker">🌿 Exercices E2 – Bac Pro MCV</div>
+  <h1>Rentabilité d'une opération commerciale<br>univers cosmétique bio</h1>
+  <p class="sub">16 exercices progressifs inspirés du sujet Asthéya – nouveaux chiffres, mêmes mécanismes de calcul, du décollage au sujet d'examen complet</p>
+  <nav class="nav-anchors">
+    <a href="#couts">💰 Coût d'un salon (4 ex.)</a>
+    <a href="#marge">📈 Marge &amp; résultat (4 ex.)</a>
+    <a href="#transfo">☎️ Taux de transformation (3 ex.)</a>
+    <a href="#reseaux">📱 Réseaux sociaux (3 ex.)</a>
+    <a href="#complet">🏁 Sujets complets E2 (2 ex.)</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 1 – COÛT D'UNE OPÉRATION (SALON)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="couts">
+  <span class="icone">💰</span>
+  <h2>Bloc 1 – Le coût total HT d'une opération commerciale</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo formule</div>
+  <code>Coût total HT = somme de tous les postes de dépenses HT</code>
+  <p class="note">Attention aux postes multipliés : <strong>prix unitaire × quantité</strong> (jours, m², nombre de chaises...). Tout est en HT.</p>
+  <div class="analogie"><strong>Analogie :</strong> c'est comme préparer un anniversaire. On additionne le gâteau, les décorations, la salle, sans jamais mélanger avec ce qu'on va gagner en vendant des parts. Ici, on compte uniquement ce qui sort de la caisse.</div>
+  <div class="recette"><strong>La recette en 3 étapes :</strong>
+    <ol>
+      <li>Je liste tous les postes de dépense un par un.</li>
+      <li>Pour chaque poste avec une quantité, je multiplie (prix unitaire × quantité).</li>
+      <li>J'additionne tous les postes obtenus.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- EX 1 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 1</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Postes fixes simples</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      L'entreprise <em>Zenithé</em> (cosmétique bio) prévoit de tenir un stand lors d'un marché de producteurs. Les dépenses prévues sont :<br><br>
+      • Location de l'emplacement : <strong>500 €</strong><br>
+      • Forfait dossier + badges : <strong>150 €</strong><br>
+      • Assurance de l'événement : <strong>50 €</strong>
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le coût total HT de la participation à ce marché.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> trois postes inférieurs à 500 € chacun. Le total sera nettement inférieur à 1 000 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>500 + 150 + 50 = 700 €</code>
+        <p class="res">Coût total HT = <strong>700 €</strong></p>
+        <p class="conclu">On additionne simplement les trois postes, aucun n'a de quantité à multiplier.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 2 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 2</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Postes journaliers</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Pour ce même marché, qui dure <strong>3 jours</strong>, deux postes supplémentaires sont à prévoir :<br><br>
+      • Location d'un vidéoprojecteur de démonstration : <strong>90 € / jour</strong><br>
+      • Frais de parking véhicule utilitaire : <strong>20 € / jour</strong>
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le coût total HT de ces deux postes sur les 3 jours.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> (90 + 20) € par jour environ, sur 3 jours : autour de 300 à 350 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Vidéoprojecteur = 90 × 3 = 270 €</code>
+        <code>Parking = 20 × 3 = 60 €</code>
+        <code>Total = 270 + 60 = 330 €</code>
+        <p class="res">Coût total HT = <strong>330 €</strong></p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 3 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 3</span>
+    <span class="badge badge-2">➔ intermédiaire</span>
+    <span class="exo-titre-txt">Plusieurs postes à quantité variable</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <em>Zenithé</em> a aussi besoin d'installer son stand. Le devis du loueur de matériel indique :<br><br>
+      • Technicien pour le montage : <strong>40 € / jour</strong>, présent <strong>3 jours</strong><br>
+      • Chaises pliantes : <strong>16 €</strong> l'unité, <strong>6 chaises</strong><br>
+      • Table d'exposition : <strong>22 €</strong> (forfait unique)
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le coût du technicien sur les 3 jours.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le coût des 6 chaises.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>Calculez le coût total HT de ces trois postes.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> le technicien coûtera autour de 120 €, les chaises autour de 100 €, la table 22 € : un total entre 200 et 300 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>40 × 3 = 120 €</code>
+        <p class="res">Coût technicien = <strong>120 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>16 × 6 = 96 €</code>
+        <p class="res">Coût des chaises = <strong>96 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>120 + 96 + 22 = 238 €</code>
+        <p class="res">Coût total HT = <strong>238 €</strong></p>
+        <p class="conclu">Ce montant sera réutilisé dans l'exercice 7.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 4 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 4</span>
+    <span class="badge badge-exam">🏁 niveau examen</span>
+    <span class="exo-titre-txt">Devis complet de participation à un salon</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      L'entreprise <em>AromaZen</em> (cosmétique bio à base de plantes) souhaite participer au salon <em>Nature &amp; Bien-être</em> de Lyon, sur <strong>3 jours</strong>. Le grille tarifaire de l'organisateur donne les informations suivantes :<br><br>
+      • Stand de 6 m² (2 m de façade × 3 m de profondeur) : <strong>900 €</strong><br>
+      • Forfait obligatoire (dossier, invitations, badges) : <strong>220 €</strong><br>
+      • Compteur électrique (pose + consommation) : <strong>150 €</strong><br>
+      • Table d'exposition : <strong>1,5 m</strong> au tarif de <strong>22 € le mètre</strong><br>
+      • Chaises : <strong>16 €</strong> l'unité, <strong>5 chaises</strong> prévues<br>
+      • Moquette : <strong>18 € le m²</strong>, sur les <strong>6 m²</strong> du stand<br>
+      • Atelier découverte cosmétique : <strong>60 €</strong><br>
+      • Bannière sur le site internet du salon (2 mois) : <strong>130 €</strong><br>
+      • Forfait personnel sur place (2 personnes) : <strong>550 €</strong>
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le montant de chaque poste à quantité variable (table, chaises, moquette).</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le coût total HT de la participation d'AromaZen au salon.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> le stand seul coûte déjà 900 €, avec tous les postes annexes on doit atteindre un total situé entre 2 000 € et 2 500 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <table class="tableau-corr">
+        <tr><th>Poste</th><th>Calcul</th><th>Montant HT</th></tr>
+        <tr><td>Stand 6 m²</td><td>forfait</td><td class="val">900 €</td></tr>
+        <tr><td>Forfait obligatoire</td><td>forfait</td><td class="val">220 €</td></tr>
+        <tr><td>Compteur électrique</td><td>forfait</td><td class="val">150 €</td></tr>
+        <tr><td>Table</td><td>1,5 × 22</td><td class="val">33 €</td></tr>
+        <tr><td>Chaises</td><td>5 × 16</td><td class="val">80 €</td></tr>
+        <tr><td>Moquette</td><td>6 × 18</td><td class="val">108 €</td></tr>
+        <tr><td>Atelier découverte</td><td>forfait</td><td class="val">60 €</td></tr>
+        <tr><td>Bannière web</td><td>forfait</td><td class="val">130 €</td></tr>
+        <tr><td>Personnel</td><td>forfait</td><td class="val">550 €</td></tr>
+        <tr class="t-total"><td colspan="2">TOTAL COÛT HT</td><td class="val">2 231 €</td></tr>
+      </table>
+      <p class="res">Coût total HT = <strong>2 231 €</strong></p>
+      <p class="conclu">Ce montant sera réutilisé dans l'exercice 8 pour calculer la rentabilité du salon.</p>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 2 – MARGE ET RÉSULTAT
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="marge">
+  <span class="icone">📈</span>
+  <h2>Bloc 2 – Marge, taux de marque et résultat</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo formule</div>
+  <code>CA HT = prix de vente unitaire HT × quantité vendue</code>
+  <code>Marge brute HT = CA HT × taux de marque</code>
+  <code>Résultat = Marge brute HT − Coût total HT</code>
+  <p class="note">Si le résultat est positif : l'opération est rentable. S'il est négatif : elle coûte plus qu'elle ne rapporte.</p>
+  <div class="analogie"><strong>Analogie :</strong> c'est l'argent de poche d'un ado qui revend des accessoires à ses copains. Il achète un lot, en garde une part pour lui (sa marge), et à la fin il regarde si ce qu'il a gagné couvre bien ce qu'il avait dépensé pour organiser la vente.</div>
+  <div class="recette"><strong>La recette en 3 étapes :</strong>
+    <ol>
+      <li>Je calcule le CA HT total (prix × quantités vendues).</li>
+      <li>Je calcule la marge (CA HT × taux de marque, exprimé en décimal : 60 % = 0,60).</li>
+      <li>Je soustrais le coût total HT de l'opération : c'est le résultat.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- EX 5 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 5</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Un seul produit, chiffres ronds</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <em>Zenithé</em> vend <strong>80 baumes hydratants</strong> à <strong>20 € HT</strong> l'unité lors d'un marché. Le taux de marque appliqué est de <strong>50 %</strong>. Le coût de l'opération était de <strong>300 €</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le CA HT réalisé.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez la marge brute HT, puis le résultat de l'opération.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 80 unités à 20 €, c'est un CA proche de 1 500 à 1 600 €. La moitié de marge (50 %) donne une marge proche de 800 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>CA HT = 20 × 80 = 1 600 €</code>
+        <p class="res">CA HT = <strong>1 600 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Marge = 1 600 × 0,50 = 800 €</code>
+        <code>Résultat = 800 − 300 = 500 €</code>
+        <p class="res">Résultat = <strong>+ 500 €</strong></p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 6 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 6</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Trois produits à additionner</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <em>Zenithé</em> présente 3 références, vendues chacune à <strong>30 unités</strong> :
+    </div>
+    <table class="tableau-donnees">
+      <tr><th>Produit</th><th>Prix HT</th><th>Quantité</th></tr>
+      <tr><td>Baume karité</td><td class="num">10 €</td><td class="num">30</td></tr>
+      <tr><td>Savon surgras</td><td class="num">12 €</td><td class="num">30</td></tr>
+      <tr><td>Huile démaquillante</td><td class="num">8 €</td><td class="num">30</td></tr>
+    </table>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le CA HT de chaque produit.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le CA HT total, puis la marge brute HT avec un taux de marque de <strong>50 %</strong>.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> les 3 prix additionnés font 30 €, multipliés par 30 unités : un CA proche de 900 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Baume : 10 × 30 = 300 €</code>
+        <code>Savon : 12 × 30 = 360 €</code>
+        <code>Huile : 8 × 30 = 240 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>CA HT total = 300 + 360 + 240 = 900 €</code>
+        <code>Marge = 900 × 0,50 = 450 €</code>
+        <p class="res">Marge brute HT = <strong>450 €</strong></p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 7 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 7</span>
+    <span class="badge badge-2">➔ intermédiaire</span>
+    <span class="exo-titre-txt">Calcul du résultat, coût déjà connu (lié à l'ex. 3)</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Reprenons le coût de montage calculé à l'exercice 3, soit <strong>238 €</strong>. Sur ce même événement, <em>Zenithé</em> vend <strong>50 unités</strong> d'un savon à <strong>15 € HT</strong>, avec un taux de marque de <strong>50 %</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le CA HT et la marge brute HT.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le résultat de l'opération et concluez sur sa rentabilité.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 50 × 15 € donne un CA proche de 750 €, sa moitié en marge est proche de 375 €, nettement supérieure aux 238 € de coût.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>CA HT = 15 × 50 = 750 €</code>
+        <code>Marge = 750 × 0,50 = 375 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Résultat = 375 − 238 = 137 €</code>
+        <p class="res">Résultat = <strong>+ 137 €</strong></p>
+        <p class="conclu">L'opération est rentable : la marge couvre largement le coût de montage.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 8 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 8</span>
+    <span class="badge badge-exam">🏁 niveau examen</span>
+    <span class="exo-titre-txt">Rentabilité prévisionnelle complète (suite de l'ex. 4)</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Reprenons AromaZen et son salon Nature &amp; Bien-être, dont le coût total HT calculé à l'exercice 4 est de <strong>2 231 €</strong>. La responsable prévoit de vendre <strong>45 unités</strong> de chacune de ses 3 références, au tarif catalogue HT.
+    </div>
+    <table class="tableau-donnees">
+      <tr><th>Produit</th><th>Prix HT</th><th>Quantité</th></tr>
+      <tr><td>Sérum régénérant</td><td class="num">35 €</td><td class="num">45</td></tr>
+      <tr><td>Baume apaisant</td><td class="num">30 €</td><td class="num">45</td></tr>
+      <tr><td>Huile relaxante</td><td class="num">25 €</td><td class="num">45</td></tr>
+    </table>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le CA HT prévisionnel total.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez la marge brute HT avec un taux de marque de <strong>60 %</strong>.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>Calculez le résultat prévisionnel du salon et commentez-le.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> les 3 prix additionnés font environ 90 €, multipliés par 45 unités : un CA proche de 4 000 €. La marge (60 %) tourne autour de 2 400 €, à comparer au coût de 2 231 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>(35 + 30 + 25) × 45 = 90 × 45 = 4 050 €</code>
+        <p class="res">CA HT prévisionnel = <strong>4 050 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>Marge = 4 050 × 0,60 = 2 430 €</code>
+        <p class="res">Marge brute HT = <strong>2 430 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>Résultat = 2 430 − 2 231 = 199 €</code>
+        <p class="res">Résultat = <strong>+ 199 €</strong></p>
+        <p class="conclu">Le salon est rentable, mais la marge de sécurité reste faible (199 € sur un coût de 2 231 €). Il faudrait envisager de vendre davantage pour sécuriser le résultat.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 3 – TAUX DE TRANSFORMATION (PROSPECTION)
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="transfo">
+  <span class="icone">☎️</span>
+  <h2>Bloc 3 – Le taux de transformation d'une prospection</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo formule</div>
+  <code>Taux de transformation = (nombre obtenu ÷ nombre de tentatives) × 100</code>
+  <p class="note">On compare toujours le résultat obtenu au nombre de départ, jamais l'inverse.</p>
+  <div class="analogie"><strong>Analogie :</strong> c'est comme au foot. Sur 10 tirs au but, si 3 rentrent, le taux de réussite est de 3 sur 10, soit 30 %. Peu importe le nombre total de tirs, la logique est toujours « ce qui a marché » divisé par « ce qui a été tenté ».</div>
+  <div class="recette"><strong>La recette en 3 étapes :</strong>
+    <ol>
+      <li>J'identifie le nombre obtenu (RDV, ventes...) et le nombre de départ (appels, contacts...).</li>
+      <li>Je divise le nombre obtenu par le nombre de départ.</li>
+      <li>Je multiplie par 100 pour obtenir un pourcentage.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- EX 9 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 9</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Un seul taux à calculer</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Un conseiller commercial d'<em>AromaZen</em> passe <strong>80 appels</strong> de prospection et obtient <strong>20 rendez-vous</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le taux de transformation des appels en rendez-vous.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 20 sur 80, c'est un quart : le taux doit être proche de 25 %.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>(20 ÷ 80) × 100 = 25 %</code>
+        <p class="res">Taux de transformation = <strong>25 %</strong></p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 10 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 10</span>
+    <span class="badge badge-2">➔ intermédiaire</span>
+    <span class="exo-titre-txt">Comparer à une performance habituelle</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Habituellement, les campagnes de prospection d'<em>AromaZen</em> obtiennent un taux de transformation de <strong>50 %</strong>. Sur la dernière campagne, <strong>60 appels</strong> ont été passés et <strong>42 rendez-vous</strong> ont été obtenus.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le taux de transformation de cette campagne.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Comparez ce résultat à la performance habituelle et commentez.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 42 sur 60, c'est plus de la moitié : le taux doit dépasser 50 %.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>(42 ÷ 60) × 100 = 70 %</code>
+        <p class="res">Taux de transformation = <strong>70 %</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Le taux habituel (50 %) est largement dépassé.</p>
+        <p class="conclu">Avec 70 % contre 50 % habituellement, la campagne est un net succès : l'argumentaire téléphonique a été particulièrement efficace.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 11 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 11</span>
+    <span class="badge badge-exam">🏁 niveau examen</span>
+    <span class="exo-titre-txt">De l'appel au CA réalisé</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      <em>Zenithé</em> lance une campagne de prospection téléphonique auprès de particuliers pour des ventes à domicile. Résultats :<br><br>
+      • <strong>50 appels</strong> passés<br>
+      • <strong>80 %</strong> se transforment en rendez-vous<br>
+      • <strong>70 %</strong> des rendez-vous se transforment en vente<br>
+      • Panier moyen HT par vente : <strong>420 €</strong><br>
+      • Objectif de CA HT fixé par la responsable : <strong>13 440 €</strong>
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le nombre de rendez-vous obtenus, puis le nombre de ventes réalisées.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le CA HT réalisé.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>L'objectif de CA HT est-il atteint ? Si non, combien de ventes supplémentaires faudrait-il ?</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 80 % de 50 appels, c'est proche de 40 ; 70 % de 40, c'est proche de 28 ventes ; à 420 € l'une, le CA tourne autour de 11 000 à 12 000 €.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction complète</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>RDV = 50 × 0,80 = 40 rendez-vous</code>
+        <code>Ventes = 40 × 0,70 = 28 ventes</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>CA HT = 28 × 420 = 11 760 €</code>
+        <p class="res">CA HT réalisé = <strong>11 760 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>Ventes nécessaires = 13 440 ÷ 420 = 32 ventes</code>
+        <code>Ventes manquantes = 32 − 28 = 4 ventes</code>
+        <p class="res">Objectif non atteint : il manque <strong>4 ventes</strong> (soit 1 680 € de CA HT).</p>
+        <p class="conclu">« L'objectif de CA n'est pas atteint. Avec 4 ventes supplémentaires, soit un total de 32, l'objectif de 13 440 € aurait été rempli. »</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 4 – PERFORMANCE RÉSEAUX SOCIAUX
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="reseaux">
+  <span class="icone">📱</span>
+  <h2>Bloc 4 – Mesurer la performance d'une publication</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo formule</div>
+  <code>Taux d'engagement = (nombre de likes ou de partages ÷ nombre d'abonnés) × 100</code>
+  <p class="note">On compare toujours par rapport au nombre total d'abonnés, pas au nombre de vues.</p>
+  <div class="analogie"><strong>Analogie :</strong> c'est comme une classe de 30 élèves à qui on demande de lever la main. Si 6 élèves lèvent la main, le taux de participation est de 6 sur 30, soit 20 %.</div>
+  <div class="recette"><strong>La recette en 3 étapes :</strong>
+    <ol>
+      <li>Je repère le nombre de likes (ou de partages) et le nombre total d'abonnés.</li>
+      <li>Je divise le nombre de likes par le nombre d'abonnés.</li>
+      <li>Je multiplie par 100 et je compare à la moyenne habituelle.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- EX 12 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 12</span>
+    <span class="badge badge-1">⬆ décollage</span>
+    <span class="exo-titre-txt">Un seul taux à calculer</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      La page Instagram d'<em>AromaZen</em> compte <strong>3 000 abonnés</strong>. Une publication a obtenu <strong>150 likes</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le taux de likes de cette publication.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 150 sur 3 000, c'est 5 sur 100 : le taux doit être proche de 5 %.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>(150 ÷ 3 000) × 100 = 5 %</code>
+        <p class="res">Taux de likes = <strong>5 %</strong></p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 13 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 13</span>
+    <span class="badge badge-2">➔ intermédiaire</span>
+    <span class="exo-titre-txt">Deux taux à comparer à une moyenne</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      La page Facebook de <em>Zenithé</em> compte <strong>5 000 abonnés</strong>. Habituellement, chaque publication génère en moyenne <strong>4 % de likes</strong> et <strong>3 % de partages</strong>. Une publication récente a obtenu <strong>300 likes</strong> et <strong>200 partages</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le taux de likes et le taux de partages de cette publication.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Comparez ces taux à la moyenne habituelle et commentez.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 300 sur 5 000 fait un peu plus que la moyenne habituelle (4 %) ; 200 sur 5 000 fait à peine plus que 3 %.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Taux de likes = (300 ÷ 5 000) × 100 = 6 %</code>
+        <code>Taux de partages = (200 ÷ 5 000) × 100 = 4 %</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Les deux taux dépassent la moyenne habituelle.</p>
+        <p class="conclu">Avec 6 % de likes (contre 4 % habituellement) et 4 % de partages (contre 3 %), la publication a mieux performé que d'ordinaire.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 14 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 14</span>
+    <span class="badge badge-exam">🏁 niveau examen</span>
+    <span class="exo-titre-txt">Analyse complète d'une campagne réseaux sociaux</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Dans le cadre du lancement de sa nouvelle gamme, <em>Zenithé</em> publie une annonce sur Facebook, où elle compte <strong>5 200 abonnés</strong>. Habituellement, une publication génère en moyenne <strong>4 % de likes</strong> et <strong>5 % de partages</strong>. Cette publication a obtenu <strong>312 likes</strong> et <strong>364 partages</strong>.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le taux de likes et le taux de partages obtenus.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Comparez chaque taux à la moyenne habituelle.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>Rédigez une phrase de commentaire à destination de la responsable commerciale.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> 312 sur 5 200 est un peu plus que la moyenne de 4 % ; 364 sur 5 200 dépasse nettement les 5 % habituels.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction complète</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>Taux de likes = (312 ÷ 5 200) × 100 = 6 %</code>
+        <code>Taux de partages = (364 ÷ 5 200) × 100 = 7 %</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <p class="res">Les deux taux dépassent la moyenne habituelle (6 % contre 4 %, 7 % contre 5 %).</p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p class="conclu">« Cette publication a très bien fonctionné : le taux de likes (6 %) et le taux de partages (7 %) dépassent nettement nos moyennes habituelles. Le message sur la nouvelle gamme a suscité un fort engagement, ce qui est un bon signal avant le lancement commercial. »</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<hr class="section-sep">
+
+<!-- ══════════════════════════════════════════════════════════
+     BLOC 5 – SUJETS COMPLETS TYPE E2
+══════════════════════════════════════════════════════════ -->
+<div class="bloc-titre" id="complet">
+  <span class="icone">🏁</span>
+  <h2>Bloc 5 – Sujets complets type épreuve E2</h2>
+</div>
+
+<div class="memo">
+  <div class="memo-titre">🗂 mémo formule</div>
+  <code>1. Coût total HT  →  2. CA HT  →  3. Marge brute HT  →  4. Résultat  →  5. Commentaire</code>
+  <p class="note">Toujours suivre cet ordre : impossible de calculer un résultat sans avoir d'abord le coût ET la marge.</p>
+  <div class="analogie"><strong>Analogie :</strong> c'est le bilan d'une sortie scolaire. On additionne d'abord toutes les dépenses (bus, entrée, repas), puis on regarde ce que rapportent les ventes de gâteaux organisées pour la financer, et enfin on voit si l'opération est à l'équilibre.</div>
+</div>
+
+<!-- EX 15 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 15</span>
+    <span class="badge badge-exam">🏁 sujet complet E2</span>
+    <span class="exo-titre-txt">Rentabilité prévisionnelle d'un salon – dossier complet</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Vous êtes conseiller(ère) commercial(e) chez <em>Zenithé</em>, cosmétique bio à la fleur d'oranger. Votre responsable envisage de participer au salon <em>Bien-être &amp; Nature</em> de Bordeaux (3 jours) et vous demande d'en évaluer la rentabilité prévisionnelle.<br><br>
+      <strong>Coûts prévisionnels :</strong><br>
+      • Stand 6 m² : 850 €<br>
+      • Forfait obligatoire : 200 €<br>
+      • Compteur électrique : 140 €<br>
+      • Table (1 m × 20 €) : 20 €<br>
+      • Chaises (4 × 15 €) : 60 €<br>
+      • Moquette (6 m² × 17 €/m²) : 102 €<br>
+      • Atelier bien-être : 65 €<br>
+      • Bannière web (2 mois) : 120 €<br>
+      • Forfait personnel : 500 €<br><br>
+      <strong>Ventes prévisionnelles :</strong> 45 unités de chacune de ses 3 références (Sérum 33 € HT, Baume 28 € HT, Huile 22 € HT). Taux de marque : 60 %.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le coût total HT de la participation au salon.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le CA HT prévisionnel, puis la marge brute HT.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>Calculez le résultat prévisionnel du salon.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">4</span>
+        <p>Commentez ce résultat d'un point de vue quantitatif, puis qualitatif.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> coût total proche de 2 000 €, CA proche de 3 500 à 4 000 €, marge (60 %) proche de 2 200 €, donc un résultat positif mais resserré.</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction complète</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <code>850 + 200 + 140 + 20 + 60 + 102 + 65 + 120 + 500 = 2 057 €</code>
+        <p class="res">Coût total HT = <strong>2 057 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>CA HT = (33 + 28 + 22) × 45 = 83 × 45 = 3 735 €</code>
+        <code>Marge = 3 735 × 0,60 = 2 241 €</code>
+        <p class="res">Marge brute HT = <strong>2 241 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <code>Résultat = 2 241 − 2 057 = 184 €</code>
+        <p class="res">Résultat prévisionnel = <strong>+ 184 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res"><strong>Quantitatif :</strong> le salon est rentable, mais la marge de sécurité est faible (184 € sur un coût de 2 057 €).</p>
+        <p class="conclu"><strong>Qualitatif :</strong> l'opération permet de faire connaître la marque, de rencontrer nos clients potentiels en direct et de tester l'accueil réservé à la nouvelle gamme, ce qui a une valeur qui dépasse le seul résultat chiffré. Axe d'amélioration : vendre plus de 45 unités par référence pour sécuriser le résultat.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- EX 16 -->
+<details class="exo-card">
+  <summary class="exo-header">
+    <span class="exo-num">Ex. 16</span>
+    <span class="badge badge-exam">🏁 sujet complet E2</span>
+    <span class="exo-titre-txt">Comparer deux opérations commerciales et recommander</span>
+    <span class="chevron">▼</span>
+  </summary>
+  <div class="exo-body">
+    <div class="contexte">
+      Votre responsable chez <em>AromaZen</em> hésite entre deux opérations pour le mois d'octobre :<br><br>
+      <strong>Opération A – Marché local (2 jours)</strong><br>
+      • Forfait emplacement : 180 €<br>
+      • Personnel : 300 € / jour<br>
+      • Communication locale : 90 €<br>
+      CA HT prévisionnel : 2 600 €. Taux de marque : 50 %.<br><br>
+      <strong>Opération B – Prospection téléphonique (8 jours)</strong><br>
+      • Téléopérateur : 120 € / jour<br>
+      • Location fichier prospects : 200 €<br>
+      • Supports d'envoi : 150 €<br>
+      300 appels. 30 % de prise de contact utile. 30 % de transformation en vente. Panier moyen : 100 € HT. Taux de marque : 50 %.
+    </div>
+    <div class="questions">
+      <div class="question">
+        <span class="q-num">1</span>
+        <p>Calculez le coût total HT de chaque opération.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">2</span>
+        <p>Calculez le CA HT de l'opération B (via le nombre de ventes).</p>
+      </div>
+      <div class="question">
+        <span class="q-num">3</span>
+        <p>Calculez le résultat de chaque opération.</p>
+      </div>
+      <div class="question">
+        <span class="q-num">4</span>
+        <p>Quelle opération recommandez-vous ? Rédigez une phrase de conclusion argumentée.</p>
+      </div>
+    </div>
+    <div class="ordre-grandeur"><strong>Ordre de grandeur :</strong> le coût de l'opération A tourne autour de 800 à 900 €, celui de l'opération B autour de 1 300 €. Le nombre de ventes en B reste modeste (moins de 30 ventes).</div>
+    <button class="btn-corrige" onclick="toggleCorr(this)">✅ Voir la correction complète</button>
+    <div class="correction">
+      <div class="corr-etape">
+        <span class="c-num">1</span>
+        <p><strong>Opération A :</strong></p>
+        <code>Personnel = 300 × 2 = 600 €</code>
+        <code>Total = 180 + 600 + 90 = 870 €</code>
+        <p><strong>Opération B :</strong></p>
+        <code>Téléopérateur = 120 × 8 = 960 €</code>
+        <code>Total = 960 + 200 + 150 = 1 310 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">2</span>
+        <code>300 × 0,30 = 90 contacts utiles</code>
+        <code>90 × 0,30 = 27 ventes</code>
+        <code>CA = 27 × 100 = 2 700 €</code>
+        <p class="res">CA HT opération B = <strong>2 700 €</strong></p>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">3</span>
+        <p><strong>Opération A :</strong></p>
+        <code>Marge = 2 600 × 0,50 = 1 300 €  |  Résultat = 1 300 − 870 = + 430 €</code>
+        <p><strong>Opération B :</strong></p>
+        <code>Marge = 2 700 × 0,50 = 1 350 €  |  Résultat = 1 350 − 1 310 = + 40 €</code>
+      </div>
+      <div class="corr-etape">
+        <span class="c-num">4</span>
+        <p class="res">L'opération A (marché local) est recommandée.</p>
+        <p class="conclu">« Les deux opérations sont rentables, mais l'opération A dégage un résultat de + 430 € contre seulement + 40 € pour l'opération B. Pour un coût de départ proche, le marché local est nettement plus rentable. »</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+</main>
+
+<footer class="site-footer">
+  Bac Pro MCV – Préparation épreuve E2 &nbsp;|&nbsp; 16 exercices progressifs – inspirés du sujet Asthéya, nouveaux chiffres
+</footer>
+
+<script>
+function toggleCorr(btn) {
+  const corr = btn.nextElementSibling;
+  const isVisible = corr.classList.contains('visible');
+  corr.classList.toggle('visible', !isVisible);
+  btn.textContent = isVisible ? '✅ Voir la correction' : '🔒 Masquer la correction';
+}
+</script>
+
+</body>
+</html>
